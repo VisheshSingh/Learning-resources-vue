@@ -20,6 +20,20 @@
       </div>
       <base-button type="submit">Add resource</base-button>
     </form>
+    <teleport to="body">
+      <base-dialog
+        title="Form submission error"
+        v-if="inputIsInvalid"
+        @close="inputIsInvalid = false"
+      >
+        <template #default><p>Please check all inputs</p></template>
+        <template #actions
+          ><base-button @click="inputIsInvalid = false"
+            >ok</base-button
+          ></template
+        >
+      </base-dialog>
+    </teleport>
   </base-card>
 </template>
 
@@ -31,11 +45,25 @@ export default {
     return {
       title: '',
       description: '',
-      resource: ''
+      resource: '',
+      inputIsInvalid: false
     };
+  },
+  computed: {
+    formIsInvalid() {
+      return !this.title || !this.description || !this.resource;
+    }
   },
   methods: {
     handleSubmit() {
+      if (
+        this.title.trim() === '' ||
+        this.description.trim() === '' ||
+        this.resource.trim() === ''
+      ) {
+        this.inputIsInvalid = true;
+        return;
+      }
       this.addNewResource({
         title: this.title,
         description: this.description,
