@@ -9,7 +9,9 @@
       >Add Resource</base-button
     >
   </base-card>
-  <component :is="selectedTab"></component>
+  <keep-alive>
+    <component :is="selectedTab"></component>
+  </keep-alive>
 </template>
 
 <script>
@@ -36,14 +38,15 @@ export default {
           id: 2,
           title: 'Vue.js',
           description: 'A Progressive framework for building UIs',
-          link: 'https://vue.org'
+          link: 'https://vuejs.org/'
         }
       ]
     };
   },
   provide() {
     return {
-      resources: this.storedResources
+      resources: this.storedResources,
+      addNewResource: this.addNewResource
     };
   },
   computed: {
@@ -57,6 +60,15 @@ export default {
   methods: {
     setSelectedTab(tab) {
       this.selectedTab = tab;
+    },
+    addNewResource({ title, description, resource }) {
+      this.storedResources.unshift({
+        id: new Date().toISOString(),
+        title,
+        description,
+        resource
+      });
+      this.selectedTab = 'stored-resource';
     }
   }
 };
